@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Windows;
+using System.Windows.Data;
 using Microsoft.Windows.Controls;
 
 namespace WpfDynamicDataGrid
@@ -11,8 +13,8 @@ namespace WpfDynamicDataGrid
     {
         internal ColumnManager(DataGrid grid, IEnumerable columns)
         {
-            this.grid = grid;
-            this.columns = columns;
+            _grid = grid;
+            _columns = columns;
 
             var observable = columns as INotifyCollectionChanged;
             if (observable != null)
@@ -27,8 +29,8 @@ namespace WpfDynamicDataGrid
                     AddColumns(e.NewItems);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    var remove = grid.Columns.Where(column => e.OldItems.Contains(DynamicGrid.GetInfo(column))).ToList();
-                    remove.ForEach(c => grid.Columns.Remove(c));
+                    var remove = _grid.Columns.Where(column => e.OldItems.Contains(DynamicGrid.GetInfo(column))).ToList();
+                    remove.ForEach(c => _grid.Columns.Remove(c));
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     GenerateColumns();
@@ -45,8 +47,9 @@ namespace WpfDynamicDataGrid
 
         internal void GenerateColumns()
         {
-            grid.Columns.Clear();
-            AddColumns(columns);
+            var remove = _grid.Columns.Where(c => DynamicGrid.GetInfo(c) != null).ToList();
+            remove.ForEach(c => _grid.Columns.Remove(c));
+            AddColumns(_columns);
         }
 
         private void AddColumns(IEnumerable items)
@@ -58,14 +61,21 @@ namespace WpfDynamicDataGrid
                 if (info == null)
                     throw new Exception(
                         "When using DynamicGrid, each element in Columns must implement IDynamicGridColumnInfo.");
-                var column = new DynamicGridColumn(info) { CellTemplate = DynamicGrid.GetColumnTemplate(grid) };
+                //var column = new DynamicGridColumn(info) { CellTemplate = DynamicGrid.GetColumnTemplate(_grid) };
+                var column = new DynamicGridColumn(_grid, info);
+                BindingOperations.SetBinding(column, DataGridTemplateColumn.CellTemplateProperty,
+                                             new Binding
+                                                 {
+                                                     Path = new PropertyPath("(0)", DynamicGrid.ColumnTemplateProperty),
+                                                     Source = _grid
+                                                 });
                 actions.Add(delegate
                 {
                     column.Header = info.Header;
                     column.DisplayIndex = info.DisplayIndex;
                     column.Width = info.Width;
                 });
-                grid.Columns.Add(column);
+                _grid.Columns.Add(column);
             }
             // Performs the initialization of each column. Some properties (e.g. DisplayIndex) must be
             // set after all columns are added in order to avoid a potential ArgumentOutOfRangeException.
@@ -73,7 +83,7 @@ namespace WpfDynamicDataGrid
                 action();
         }
 
-        private readonly DataGrid grid;
-        private readonly IEnumerable columns;
+        private readonly DataGrid _grid;
+        private readonly IEnumerable _columns;
     }
 }

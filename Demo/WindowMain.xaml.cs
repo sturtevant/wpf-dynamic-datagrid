@@ -71,7 +71,7 @@ namespace WpfDynamicDataGrid.Demo
         private void FillData()
         {
             foreach (var row in Data)
-                while (row.Count < Columns.Count + 1)
+                while (row.Count < Columns.Count)
                     row.Add(new MyItem { Value = String.Format("NewItem{0}.{1}", row.Count, Data.IndexOf(row)) });
         }
     }

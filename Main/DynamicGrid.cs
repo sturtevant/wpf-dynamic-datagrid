@@ -27,15 +27,7 @@ namespace WpfDynamicDataGrid
         }
 
         public static readonly DependencyProperty ColumnTemplateProperty = DependencyProperty.RegisterAttached(
-            "ColumnTemplate", typeof(DataTemplate), typeof(DynamicGrid),
-            new FrameworkPropertyMetadata(null, ColumnTemplateChanged));
-        private static void ColumnTemplateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var grid = (DataGrid)sender;
-            var manager = GetColumnManager(grid);
-            if (manager != null)
-                manager.GenerateColumns();
-        }
+            "ColumnTemplate", typeof (DataTemplate), typeof (DynamicGrid));
         public static void SetColumnTemplate(DataGrid element, DataTemplate value)
         {
             element.SetValue(ColumnTemplateProperty, value);
@@ -43,6 +35,25 @@ namespace WpfDynamicDataGrid
         public static DataTemplate GetColumnTemplate(DataGrid element)
         {
             return (DataTemplate)element.GetValue(ColumnTemplateProperty);
+        }
+
+        public static readonly DependencyProperty DataPathProperty = DependencyProperty.RegisterAttached(
+            "DataPath", typeof(string), typeof(DynamicGrid),
+            new FrameworkPropertyMetadata(null, DataPathChanged));
+        private static void DataPathChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var grid = (DataGrid)sender;
+            var manager = GetColumnManager(grid);
+            if (manager != null)
+                manager.GenerateColumns();
+        }
+        public static void SetDataPath(DataGrid element, string value)
+        {
+            element.SetValue(DataPathProperty, value);
+        }
+        public static string GetDataPath(DataGrid element)
+        {
+            return (string)element.GetValue(DataPathProperty);
         }
 
         internal static readonly DependencyProperty ColumnManagerProperty = DependencyProperty.RegisterAttached(
