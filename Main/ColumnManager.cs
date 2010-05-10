@@ -72,7 +72,8 @@ namespace WpfDynamicDataGrid
                 actions.Add(delegate
                 {
                     column.Header = info.Header;
-                    column.DisplayIndex = info.DisplayIndex;
+                    //if (info.DisplayIndex < _grid.Columns.Count)
+                        column.DisplayIndex = info.DisplayIndex;
                     column.Width = info.Width;
                 });
                 _grid.Columns.Add(column);

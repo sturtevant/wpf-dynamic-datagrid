@@ -16,16 +16,16 @@ namespace WpfDynamicDataGrid.Demo
         {
             InitializeComponent();
             Columns = new ObservableCollection<DynamicGridColumnInfo>();
-            Data = new ObservableCollection<ObservableCollection<MyItem>>();
+            Data = new ObservableCollection<MyItemRow>();
             DataContext = this;
         }
 
         public ObservableCollection<DynamicGridColumnInfo> Columns { get; private set; }
-        public ObservableCollection<ObservableCollection<MyItem>> Data { get; private set; }
+        public ObservableCollection<MyItemRow> Data { get; private set; }
 
         private void ButtonAddRow_Click(object sender, RoutedEventArgs e)
         {
-            Data.Add(new ObservableCollection<MyItem>());
+            Data.Add(new MyItemRow());
             if (CheckBoxAutoFill.IsChecked ?? false)
                 FillData();
         }
@@ -71,8 +71,8 @@ namespace WpfDynamicDataGrid.Demo
         private void FillData()
         {
             foreach (var row in Data)
-                while (row.Count < Columns.Count)
-                    row.Add(new MyItem { Value = String.Format("NewItem{0}.{1}", row.Count, Data.IndexOf(row)) });
+                while (row.Items.Count < Columns.Count)
+                    row.Items.Add(new MyItem { Value = String.Format("NewItem{0}.{1}", row.Items.Count, Data.IndexOf(row)) });
         }
     }
 }

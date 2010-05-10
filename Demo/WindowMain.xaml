@@ -30,6 +30,7 @@
         <Label Grid.Row="1" Content="Data View 1:" />
         <tk:DataGrid Grid.Row="2" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Data}"
                      VirtualizingStackPanel.VirtualizationMode="Standard" ScrollViewer.IsDeferredScrollingEnabled="True"
+                     l:DynamicGrid.DataPath="Items"
                      l:DynamicGrid.Columns="{Binding Columns}">
             <l:DynamicGrid.ColumnTemplate>
                 <DataTemplate>
@@ -64,6 +65,7 @@
         <Label Grid.Row="3" Content="Data View 2:" />
         <tk:DataGrid Grid.Row="4" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Data}"
                      VirtualizingStackPanel.VirtualizationMode="Standard" ScrollViewer.IsDeferredScrollingEnabled="True"
+                     l:DynamicGrid.DataPath="Items"
                      l:DynamicGrid.Columns="{Binding Columns}">
             <l:DynamicGrid.ColumnTemplate>
                 <DataTemplate>
